@@ -1,0 +1,752 @@
+swagger: "2.0"
+info:
+  title: beego Test API
+  description: |
+    beego has a very cool tools to autogenerate documents for your API
+  version: 1.0.0
+  termsOfService: http://beego.me/
+  contact:
+    email: astaxie@gmail.com
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+basePath: /v1
+paths:
+  /bulk-sms-campaigns/:
+    get:
+      tags:
+      - bulk-sms-campaigns
+      description: |-
+        get BulkSmsCampaigns
+        <br>
+      operationId: BulkSmsCampaignsController.Get All
+      parameters:
+      - in: query
+        name: query
+        description: Filter. e.g. col1:v1,col2:v2 ...
+        type: string
+      - in: query
+        name: fields
+        description: Fields returned. e.g. col1,col2 ...
+        type: string
+      - in: query
+        name: sortby
+        description: Sorted-by fields. e.g. col1,col2 ...
+        type: string
+      - in: query
+        name: order
+        description: Order corresponding to each sortby field, if single value, apply
+          to all sortby fields. e.g. desc,asc ...
+        type: string
+      - in: query
+        name: limit
+        description: Limit the size of result set. Must be an integer
+        type: string
+      - in: query
+        name: offset
+        description: Start position of result set. Must be an integer
+        type: string
+      responses:
+        "200":
+          description: ""
+          schema:
+            $ref: '#/definitions/models.BulkSmsCampaigns'
+        "403":
+          description: ""
+    post:
+      tags:
+      - bulk-sms-campaigns
+      description: |-
+        create BulkSmsCampaigns
+        <br>
+      operationId: BulkSmsCampaignsController.Post
+      parameters:
+      - in: body
+        name: body
+        description: body for BulkSmsCampaigns content
+        required: true
+        schema:
+          $ref: '#/definitions/models.BulkSmsCampaigns'
+      responses:
+        "201":
+          description: '{int} models.BulkSmsCampaigns'
+        "403":
+          description: body is empty
+  /bulk-sms-campaigns/{id}:
+    get:
+      tags:
+      - bulk-sms-campaigns
+      description: |-
+        get BulkSmsCampaigns by id
+        <br>
+      operationId: BulkSmsCampaignsController.Get One
+      parameters:
+      - in: path
+        name: id
+        description: The key for staticblock
+        required: true
+        type: string
+      responses:
+        "200":
+          description: ""
+          schema:
+            $ref: '#/definitions/models.BulkSmsCampaigns'
+        "403":
+          description: :id is empty
+    put:
+      tags:
+      - bulk-sms-campaigns
+      description: |-
+        update the BulkSmsCampaigns
+        <br>
+      operationId: BulkSmsCampaignsController.Put
+      parameters:
+      - in: path
+        name: id
+        description: The id you want to update
+        required: true
+        type: string
+      - in: body
+        name: body
+        description: body for BulkSmsCampaigns content
+        required: true
+        schema:
+          $ref: '#/definitions/models.BulkSmsCampaigns'
+      responses:
+        "200":
+          description: ""
+          schema:
+            $ref: '#/definitions/models.BulkSmsCampaigns'
+        "403":
+          description: :id is not int
+    delete:
+      tags:
+      - bulk-sms-campaigns
+      description: |-
+        delete the BulkSmsCampaigns
+        <br>
+      operationId: BulkSmsCampaignsController.Delete
+      parameters:
+      - in: path
+        name: id
+        description: The id you want to delete
+        required: true
+        type: string
+      responses:
+        "200":
+          description: '{string} delete success!'
+        "403":
+          description: id is empty
+  /bulk-sms-campaigns/send-bulk-sms/{id}:
+    get:
+      tags:
+      - bulk-sms-campaigns
+      description: |-
+        get BulkSmsCampaigns by id
+        <br>
+      operationId: BulkSmsCampaignsController.Send Bulk SMS
+      parameters:
+      - in: path
+        name: id
+        description: The key for staticblock
+        required: true
+        type: string
+      responses:
+        "200":
+          description: ""
+          schema:
+            $ref: '#/definitions/models.BulkSmsCampaigns'
+        "403":
+          description: :id is empty
+definitions:
+  models.AccountVerification:
+    title: AccountVerification
+    type: object
+    properties:
+      AccountId:
+        $ref: '#/definitions/models.Accounts'
+      Active:
+        type: integer
+        format: int64
+      CreatedBy:
+        type: integer
+        format: int64
+      DateCreated:
+        type: string
+        format: datetime
+      DateModified:
+        type: string
+        format: datetime
+      Id:
+        type: integer
+        format: int64
+      IdNumber:
+        type: string
+      Image:
+        type: string
+      ModifiedBy:
+        type: integer
+        format: int64
+      Response:
+        type: string
+      Status:
+        type: string
+  models.Accounts:
+    title: Accounts
+    type: object
+    properties:
+      AccountNumber:
+        type: string
+      Active:
+        type: integer
+        format: int64
+      Balance:
+        type: number
+        format: float
+      BalanceBefore:
+        type: number
+        format: float
+      CreatedBy:
+        type: integer
+        format: int64
+      DateCreated:
+        type: string
+        format: datetime
+      DateModified:
+        type: string
+        format: datetime
+      Id:
+        type: integer
+        format: int64
+      ModifiedBy:
+        type: integer
+        format: int64
+      UserId:
+        $ref: '#/definitions/models.Users'
+  models.AuthGroup:
+    title: AuthGroup
+    type: object
+    properties:
+      Id:
+        type: integer
+        format: int64
+      Name:
+        type: string
+  models.AuthGroupPermissions:
+    title: AuthGroupPermissions
+    type: object
+    properties:
+      GroupId:
+        $ref: '#/definitions/models.AuthGroup'
+      Id:
+        type: integer
+        format: int64
+      PermissionId:
+        $ref: '#/definitions/models.AuthPermission'
+  models.AuthPermission:
+    title: AuthPermission
+    type: object
+    properties:
+      Codename:
+        type: string
+      ContentTypeId:
+        $ref: '#/definitions/models.DjangoContentType'
+      Id:
+        type: integer
+        format: int64
+      Name:
+        type: string
+  models.AuthUser:
+    title: AuthUser
+    type: object
+    properties:
+      DateJoined:
+        type: string
+        format: datetime
+      Email:
+        type: string
+      FirstName:
+        type: string
+      Id:
+        type: integer
+        format: int64
+      IsActive:
+        type: integer
+        format: int32
+      IsStaff:
+        type: integer
+        format: int32
+      IsSuperuser:
+        type: integer
+        format: int32
+      LastLogin:
+        type: string
+        format: datetime
+      LastName:
+        type: string
+      Password:
+        type: string
+      Username:
+        type: string
+  models.AuthUserGroups:
+    title: AuthUserGroups
+    type: object
+    properties:
+      GroupId:
+        $ref: '#/definitions/models.AuthGroup'
+      Id:
+        type: integer
+        format: int64
+      UserId:
+        $ref: '#/definitions/models.AuthUser'
+  models.AuthUserUserPermissions:
+    title: AuthUserUserPermissions
+    type: object
+    properties:
+      Id:
+        type: integer
+        format: int64
+      PermissionId:
+        $ref: '#/definitions/models.AuthPermission'
+      UserId:
+        $ref: '#/definitions/models.AuthUser'
+  models.BulkSmsBulkrecipients:
+    title: BulkSmsBulkrecipients
+    type: object
+    properties:
+      Active:
+        type: integer
+        format: int64
+      CampaignIdId:
+        $ref: '#/definitions/models.BulkSmsCampaigns'
+      CreatedAt:
+        type: string
+        format: datetime
+      CreatedBy:
+        type: integer
+        format: int64
+      Id:
+        type: integer
+        format: int64
+      Processed:
+        type: integer
+        format: int64
+      Recipient:
+        type: string
+      UpdatedAt:
+        type: string
+        format: datetime
+      UpdatedBy:
+        type: integer
+        format: int64
+  models.BulkSmsCampaigns:
+    title: BulkSmsCampaigns
+    type: object
+    properties:
+      Active:
+        type: integer
+        format: int64
+      CreatedAt:
+        type: string
+        format: datetime
+      CreatedById:
+        $ref: '#/definitions/models.Users'
+      Id:
+        type: integer
+        format: int64
+      Message:
+        type: string
+      RecipientEmail:
+        type: string
+      RecipientFile:
+        type: string
+      RecipientNumber:
+        type: string
+      ScheduledTime:
+        type: string
+        format: datetime
+      Title:
+        type: string
+      Type:
+        type: string
+      UpdatedAt:
+        type: string
+        format: datetime
+      UpdatedById:
+        $ref: '#/definitions/models.Users'
+  models.CustomerCategories:
+    title: CustomerCategories
+    type: object
+    properties:
+      Active:
+        type: integer
+        format: int64
+      Category:
+        type: string
+      CreatedBy:
+        type: integer
+        format: int64
+      DateCreated:
+        type: string
+        format: datetime
+      DateModified:
+        type: string
+        format: datetime
+      Description:
+        type: string
+      Id:
+        type: integer
+        format: int64
+      ModifiedBy:
+        type: integer
+        format: int64
+  models.Customers:
+    title: Customers
+    type: object
+    properties:
+      Active:
+        type: integer
+        format: int64
+      CreatedBy:
+        type: integer
+        format: int64
+      CustomerCategoryId:
+        type: integer
+        format: int64
+      DateCreated:
+        type: string
+        format: datetime
+      DateModified:
+        type: string
+        format: datetime
+      Id:
+        type: integer
+        format: int64
+      ModifiedBy:
+        type: integer
+        format: int64
+      Nickname:
+        type: string
+      ShopId:
+        $ref: '#/definitions/models.Shops'
+      UserId:
+        $ref: '#/definitions/models.Users'
+  models.DjangoAdminLog:
+    title: DjangoAdminLog
+    type: object
+    properties:
+      ActionFlag:
+        type: integer
+        format: int32
+      ActionTime:
+        type: string
+        format: datetime
+      ChangeMessage:
+        type: string
+      ContentTypeId:
+        $ref: '#/definitions/models.DjangoContentType'
+      Id:
+        type: integer
+        format: int64
+      ObjectId:
+        type: string
+      ObjectRepr:
+        type: string
+      UserId:
+        $ref: '#/definitions/models.AuthUser'
+  models.DjangoContentType:
+    title: DjangoContentType
+    type: object
+    properties:
+      AppLabel:
+        type: string
+      Id:
+        type: integer
+        format: int64
+      Model:
+        type: string
+  models.DjangoMigrations:
+    title: DjangoMigrations
+    type: object
+    properties:
+      App:
+        type: string
+      Applied:
+        type: string
+        format: datetime
+      Id:
+        type: integer
+        format: int64
+      Name:
+        type: string
+  models.DjangoSession:
+    title: DjangoSession
+    type: object
+    properties:
+      ExpireDate:
+        type: string
+        format: datetime
+      Id:
+        type: integer
+        format: int64
+      SessionData:
+        type: string
+  models.Migrations:
+    title: Migrations
+    type: object
+    properties:
+      CreatedAt:
+        description: date migrated or rolled back
+        type: string
+        format: datetime
+      Id:
+        description: surrogate key
+        type: integer
+        format: int64
+      Name:
+        description: migration name, unique
+        type: string
+      RollbackStatements:
+        description: SQL statment for rolling back migration
+        type: string
+      Statements:
+        description: SQL statements for this migration
+        type: string
+      Status:
+        description: update indicates it is a normal migration while rollback means
+          this migration is rolled back
+        type: string
+  models.NewsletterCustomers:
+    title: NewsletterCustomers
+    type: object
+    properties:
+      Active:
+        type: integer
+        format: int64
+      CreatedBy:
+        type: integer
+        format: int64
+      DateCreated:
+        type: string
+        format: datetime
+      DateModified:
+        type: string
+        format: datetime
+      Email:
+        type: string
+      FirstName:
+        type: string
+      Id:
+        type: integer
+        format: int64
+      LastName:
+        type: string
+      ModifiedBy:
+        type: integer
+        format: int64
+  models.OnboardBusinessdetails:
+    title: OnboardBusinessdetails
+    type: object
+    properties:
+      Active:
+        type: integer
+        format: int64
+      AlternatePhoneNumber:
+        type: string
+      BusinessRegistrationNumber:
+        type: string
+      CertOfCorporation:
+        type: string
+      CommenceBusinessCert:
+        type: string
+      CompanyName:
+        type: string
+      CompanyProfileCert:
+        type: string
+      CreatedAt:
+        type: string
+        format: datetime
+      CreatedById:
+        $ref: '#/definitions/models.Users'
+      Id:
+        type: integer
+        format: int64
+      NatureOfBusiness:
+        type: string
+      NumberOfDirectors:
+        type: integer
+        format: int64
+      OfficialPhoneNumber:
+        type: string
+      PostalAddress:
+        type: string
+      StreetAddress:
+        type: string
+      UpdatedAt:
+        type: string
+        format: datetime
+      UpdatedById:
+        $ref: '#/definitions/models.AuthUser'
+      UserIdFile:
+        type: string
+  models.OnboardDirectorids:
+    title: OnboardDirectorids
+    type: object
+    properties:
+      BusinessDetailIdId:
+        $ref: '#/definitions/models.OnboardBusinessdetails'
+      DirectorIds:
+        type: string
+      Id:
+        type: integer
+        format: int64
+  models.Shops:
+    title: Shops
+    type: object
+    properties:
+      Active:
+        type: integer
+        format: int64
+      CreatedBy:
+        type: integer
+        format: int64
+      DateCreated:
+        type: string
+        format: datetime
+      DateModified:
+        type: string
+        format: datetime
+      Id:
+        type: integer
+        format: int64
+      Image:
+        type: string
+      ModifiedBy:
+        type: integer
+        format: int64
+      ShopAssistantName:
+        type: string
+      ShopAssistantNumber:
+        type: string
+      ShopDescription:
+        type: string
+      ShopName:
+        type: string
+  models.UserOtps:
+    title: UserOtps
+    type: object
+    properties:
+      Active:
+        type: integer
+        format: int64
+      Code:
+        type: string
+      CreatedBy:
+        type: integer
+        format: int64
+      DateCreated:
+        type: string
+        format: datetime
+      DateGenerated:
+        type: string
+        format: datetime
+      DateModified:
+        type: string
+        format: datetime
+      ExpiryDate:
+        type: string
+        format: datetime
+      Id:
+        type: integer
+        format: int64
+      ModifiedBy:
+        type: integer
+        format: int64
+      Status:
+        type: integer
+        format: int64
+      UserId:
+        $ref: '#/definitions/models.Users'
+  models.UserTypes:
+    title: UserTypes
+    type: object
+    properties:
+      Active:
+        type: integer
+        format: int64
+      CreatedBy:
+        type: integer
+        format: int64
+      DateCreated:
+        type: string
+        format: datetime
+      DateModified:
+        type: string
+        format: datetime
+      Id:
+        type: integer
+        format: int64
+      ModifiedBy:
+        type: integer
+        format: int64
+      UserTypeDescription:
+        type: string
+      UserTypeName:
+        type: string
+  models.Users:
+    title: Users
+    type: object
+    properties:
+      Active:
+        type: integer
+        format: int64
+      Address:
+        type: string
+      CreatedBy:
+        type: integer
+        format: int64
+      DateCreated:
+        type: string
+        format: datetime
+      DateModified:
+        type: string
+        format: datetime
+      Dob:
+        type: string
+        format: datetime
+      Email:
+        type: string
+      FullName:
+        type: string
+      Gender:
+        type: string
+      Id:
+        type: integer
+        format: int64
+      IdNumber:
+        type: string
+      IdType:
+        type: string
+      ImagePath:
+        type: string
+      IsVerified:
+        type: integer
+        format: int32
+      MaritalStatus:
+        type: string
+      ModifiedBy:
+        type: integer
+        format: int64
+      Password:
+        type: string
+      PhoneNumber:
+        type: string
+      UserType:
+        type: integer
+        format: int64
+      Username:
+        type: string
+tags:
+- name: bulk-sms-campaigns
+  description: |
+    BulkSmsCampaignsController operations for BulkSmsCampaigns
