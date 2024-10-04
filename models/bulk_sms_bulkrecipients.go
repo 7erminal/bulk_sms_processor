@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"github.com/beego/beego/v2/client/orm"
+	"github.com/beego/beego/v2/core/logs"
 )
 
 type BulkSmsBulkrecipients struct {
@@ -150,6 +151,19 @@ func UpdateBulkSmsBulkrecipientsById(m *BulkSmsBulkrecipients) (err error) {
 		if num, err = o.Update(m); err == nil {
 			fmt.Println("Number of records updated in database:", num)
 		}
+	}
+	return
+}
+
+// UpdateBulkSmsBulkrecipients updates BulkSmsBulkrecipients by Id and returns error if
+// the record to be updated doesn't exist
+func UpdateBulkSmsBulkrecipientsByCampaignId(m *BulkSmsCampaigns) (err error) {
+	o := orm.NewOrm()
+	// v := BulkSmsBulkrecipients{Id: m.Id}
+	// ascertain id exists in the database
+	// var l []BulkSmsBulkrecipients
+	if _, err = o.QueryTable(new(BulkSmsBulkrecipients)).Filter("CampaignIdId__Id", m.Id).Update(orm.Params{"Processed": 1}); err == nil {
+		logs.Info("Query results are ")
 	}
 	return
 }

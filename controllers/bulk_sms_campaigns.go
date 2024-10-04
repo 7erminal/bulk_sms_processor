@@ -5,7 +5,9 @@ import (
 	"errors"
 	"mes_bulk_sms_processor/models"
 	"mes_bulk_sms_processor/structs/requests"
+	"mes_bulk_sms_processor/structs/responses"
 	"mes_bulk_sms_processor/utils"
+	"reflect"
 	"strconv"
 	"strings"
 
@@ -82,6 +84,7 @@ func (c *BulkSmsCampaignsController) SendBulkSMS() {
 	logs.Debug("Request received ", idStr)
 	id, _ := strconv.Atoi(idStr)
 	v, err := models.GetBulkSmsCampaignsById(id)
+	var campaignObj responses.CampaignResp = responses.CampaignResp{Id: v.Id, RecipientEmail: v.RecipientEmail, RecipientNumber: v.RecipientNumber, Title: v.Title, Message: v.Message, ScheduledTime: v.ScheduledTime}
 	if err != nil {
 		c.Data["json"] = err.Error()
 	} else {
@@ -101,11 +104,96 @@ func (c *BulkSmsCampaignsController) SendBulkSMS() {
 			reqObj := requests.SendSMSRequest{Destination: recipientsStr, Message: v.Message}
 
 			logs.Info("About to send request ")
-			utils.SendSMS(&c.Controller, reqObj)
+			resp := utils.SendSMS(&c.Controller, reqObj)
+			statCode, exists := resp["code"]
+
+			if exists {
+
+				logs.Info("Status code is ", statCode)
+				logs.Info("Checking status code ... ", reflect.TypeOf(statCode))
+				var successCode float64 = 401
+				if statCode == successCode {
+					// var campaign models.BulkSmsCampaigns = models.BulkSmsCampaigns{Id: id, Active: 1}
+
+					v.Active = 1
+
+					logs.Info("Sending::: ", v.Id)
+					logs.Info("Sending::: ", v.Title)
+					logs.Info("Sending::: ", v.UpdatedById)
+					logs.Info("Sending::: ", v.Active)
+
+					if err := models.UpdateBulkSmsBulkrecipientsByCampaignId(v); err == nil {
+						logs.Info("Updated recipients")
+						logs.Info("About to update with ", v.Id)
+						logs.Info("About to update with ", v.Title)
+						logs.Info("About to update with ", v.UpdatedById)
+
+						sysUser := "applicationuser"
+
+						if user, err := models.GetUsersByUsername(sysUser); err == nil {
+
+							v.UpdatedById = user
+
+							logs.Info("About to now set ", v.UpdatedById)
+
+							if err := models.UpdateBulkSmsCampaignsById(v); err == nil {
+								logs.Info("Campaign updated successfully")
+
+								var resp responses.SendBulkSMSResponse = responses.SendBulkSMSResponse{StatusCode: 200, Result: &campaignObj, StatusDesc: "Successful"}
+								c.Data["json"] = resp
+							} else {
+								logs.Error("Error updating ", err.Error())
+								var resp responses.SendBulkSMSResponse = responses.SendBulkSMSResponse{StatusCode: 307, Result: &campaignObj, StatusDesc: "Unable to update campaign"}
+
+								c.Data["json"] = resp
+							}
+						} else {
+							logs.Error("Error updating ", err.Error())
+							var resp responses.SendBulkSMSResponse = responses.SendBulkSMSResponse{StatusCode: 308, Result: &campaignObj, StatusDesc: "Unable to find user"}
+
+							c.Data["json"] = resp
+						}
+					} else {
+						var resp responses.SendBulkSMSResponse = responses.SendBulkSMSResponse{StatusCode: 306, Result: &campaignObj, StatusDesc: "Unable to update recipient data"}
+
+						c.Data["json"] = resp
+					}
+				} else {
+					statDesc, exists := resp["message"]
+					if exists {
+						logs.Info("Status description is ", statDesc)
+
+						var resp responses.SendBulkSMSResponse
+
+						if str, isString := statDesc.(string); isString {
+							/* act on str */
+							resp = responses.SendBulkSMSResponse{StatusCode: 302, Result: &campaignObj, StatusDesc: str}
+						} else {
+							/* not string */
+							resp = responses.SendBulkSMSResponse{StatusCode: 302, Result: &campaignObj, StatusDesc: "Failed"}
+						}
+
+						c.Data["json"] = resp
+					} else {
+						logs.Info("Status description is ", statDesc)
+						var resp responses.SendBulkSMSResponse = responses.SendBulkSMSResponse{StatusCode: 302, Result: &campaignObj, StatusDesc: "Failed"}
+
+						c.Data["json"] = resp
+					}
+				}
+			} else {
+				var resp responses.SendBulkSMSResponse = responses.SendBulkSMSResponse{StatusCode: 302, Result: &campaignObj, StatusDesc: "Unknown error"}
+
+				c.Data["json"] = resp
+			}
+
 		} else {
 			logs.Error("Error returned::: ", err.Error())
+
+			var resp responses.SendBulkSMSResponse = responses.SendBulkSMSResponse{StatusCode: 301, Result: &campaignObj, StatusDesc: err.Error()}
+
+			c.Data["json"] = resp
 		}
-		c.Data["json"] = v
 	}
 	c.ServeJSON()
 }

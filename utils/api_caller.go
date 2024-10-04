@@ -6,13 +6,12 @@ import (
 	"mes_bulk_sms_processor/api"
 
 	"mes_bulk_sms_processor/structs/requests"
-	"mes_bulk_sms_processor/structs/responses"
 
 	"github.com/beego/beego/v2/core/logs"
 	beego "github.com/beego/beego/v2/server/web"
 )
 
-func SendSMS(c *beego.Controller, params requests.SendSMSRequest) {
+func SendSMS(c *beego.Controller, params requests.SendSMSRequest) (data map[string]interface{}) {
 	host, _ := beego.AppConfig.String("deywuro")
 
 	logs.Info("Sending to destination ", params.Destination)
@@ -43,20 +42,15 @@ func SendSMS(c *beego.Controller, params requests.SendSMSRequest) {
 		c.Data["json"] = err.Error()
 	}
 
-	logs.Info("Raw response received is ", res)
-	// data := map[string]interface{}{}
-	var data responses.AccountDTO
+	// logs.Info("Raw response received is ", read.json())
+	// var data map[string]interface{}
+
+	// var data responses.SendBulkSMSResponse
 	json.Unmarshal(read, &data)
 	c.Data["json"] = data
 
-	// logs.Info("Response received ", c.Data["json"])
-	// logs.Info("Access token ", data["access_token"])
-	// logs.Info("Expires in ", data["expires_in"])
-	// logs.Info("Scope is ", data["scope"])
-	// logs.Info("Token Type is ", data["token_type"])
-	// logs.Info("Response received ", c.Data["json"])
-	// logs.Info("Access token ", data.Access_token)
-	// logs.Info("Expires in ", data.Expires_in)
-	// logs.Info("Scope is ", data.Scope)
-	// logs.Info("Token Type is ", data.Token_type)
+	logs.Info("Raw response received is ")
+	logs.Info(data)
+
+	return data
 }
