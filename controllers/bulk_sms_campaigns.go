@@ -111,7 +111,7 @@ func (c *BulkSmsCampaignsController) SendBulkSMS() {
 
 				logs.Info("Status code is ", statCode)
 				logs.Info("Checking status code ... ", reflect.TypeOf(statCode))
-				var successCode float64 = 401
+				var successCode float64 = 0
 				if statCode == successCode {
 					// var campaign models.BulkSmsCampaigns = models.BulkSmsCampaigns{Id: id, Active: 1}
 
