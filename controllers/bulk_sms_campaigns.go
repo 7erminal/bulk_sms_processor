@@ -99,6 +99,9 @@ func (c *BulkSmsCampaignsController) SendBulkSMS() {
 			}
 
 			recipientsStr := strings.Join(recipients, ",")
+			if recipientsStr == "" {
+				recipientsStr = v.RecipientNumber
+			}
 			logs.Info("Recipients are ", recipientsStr)
 
 			reqObj := requests.SendSMSRequest{Destination: recipientsStr, Message: v.Message}
