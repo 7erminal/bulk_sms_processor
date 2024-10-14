@@ -22,7 +22,8 @@ func SendSMS(c *beego.Controller, params requests.SendSMSRequest) (data map[stri
 		api.POST)
 	request.Params["username"], _ = beego.AppConfig.String("deywuroUsername")
 	request.Params["password"], _ = beego.AppConfig.String("deywuroPassword")
-	request.Params["source"], _ = beego.AppConfig.String("deywuroSource")
+	// request.Params["source"], _ = beego.AppConfig.String("deywuroSource")
+	request.Params["source"] = params.Enterprise
 	request.Params["destination"] = params.Destination
 	request.Params["message"] = params.Message
 	request.Params["ol"] = "false"

@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"github.com/beego/beego/v2/client/orm"
+	"github.com/beego/beego/v2/core/logs"
 )
 
 type Customers struct {
@@ -20,7 +21,8 @@ type Customers struct {
 	ModifiedBy         int       `orm:"column(modified_by);null"`
 	Nickname           string    `orm:"column(nickname);size(100);null"`
 	ShopId             *Shops    `orm:"column(shop_id);rel(fk)"`
-	UserId             *Users    `orm:"column(user_id);rel(fk)"`
+	// UserId             *Users    `orm:"column(user_id);rel(fk)"`
+	UserId *Users `orm:"column(user_id);rel(fk)"`
 }
 
 func (t *Customers) TableName() string {
@@ -47,6 +49,27 @@ func GetCustomersById(id int) (v *Customers, err error) {
 	if err = o.Read(v); err == nil {
 		return v, nil
 	}
+	return nil, err
+}
+
+// GetCustomersById retrieves Customers by Id. Returns error if
+// User doesn't exist
+func GetCustomersByUser(user Users) (v *Customers, err error) {
+	o := orm.NewOrm()
+	v = &Customers{UserId: &user}
+
+	if err = o.QueryTable(new(Customers)).Filter("UserId", user).RelatedSel().One(v); err == nil {
+		logs.Info("Sending ", v)
+		return v, nil
+	}
+
+	// logs.Info("Getting customer by user ")
+
+	// if err = o.Read(v, "UserId"); err == nil {
+	// 	logs.Info("Sending ", v)
+	// 	return v, nil
+	// }
+	logs.Info("Returning nil ", v)
 	return nil, err
 }
 
